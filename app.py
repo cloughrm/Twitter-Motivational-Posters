@@ -19,7 +19,7 @@ def index():
         if not tweet_id:
             return render_template('index.html')
 
-        tweet = get_tweet(tweet_id)
+        tweet = get_tweet(int(tweet_id))
         file_id = generate_image(tweet.AsDict())
         return redirect(url_for('index', id=file_id))
 

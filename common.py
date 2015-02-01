@@ -118,6 +118,3 @@ def get_tweet(tweet_id):
     return api.GetStatus(tweet_id)
 
 
-if __name__ == '__main__':
-    tweet = get_tweet(561050346273771520)
-    generate_image(tweet.AsDict())

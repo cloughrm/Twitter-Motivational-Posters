@@ -2,3 +2,4 @@ static/img/created/*.jpg
 *.pyc
 *~
 *.swp
+*.log
