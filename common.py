@@ -14,6 +14,10 @@ out_dir = os.path.join(cwd, 'static', 'img', 'created')
 lucida_calligraphy_path = os.path.join(cwd, '..', 'fonts', 'Lucida Calligraphy')
 helvetica_path = '/Library/Fonts/Microsoft/Calibri.ttf'
 
+# Make sure out_dir exists
+if not os.path.exists(out_dir):
+    os.makedirs(out_dir)
+
 
 # I did not write this function. Credit:
 # https://mail.python.org/pipermail/image-sig/2004-December/003064.html
