@@ -11,8 +11,8 @@ from PIL import ImageDraw
 cwd = os.path.dirname(os.path.realpath(__file__))
 img_path = os.path.join(cwd, 'static', 'img', 'backgrounds', 'priroda-leto-rasteniya-zelen.jpg')
 out_dir = os.path.join(cwd, 'static', 'img', 'created')
-lucida_calligraphy_path = os.path.join(cwd, 'fonts', 'Lucida Calligraphy')
-helvetica_path = '/Library/Fonts/Microsoft/Calibri.ttf'
+georgia_calligraphy_path = os.path.join(cwd, 'fonts', 'Georgia_Italic.ttf')
+calibri_path = os.path.join(cwd, 'fonts', 'Calibri.ttf')
 
 # Make sure out_dir exists
 if not os.path.exists(out_dir):
@@ -63,9 +63,9 @@ def generate_image(tweet):
 
     image = Image.open(img_path)
     draw = ImageDraw.Draw(image)
-    lucida_calligraphy = ImageFont.truetype(lucida_calligraphy_path, font_size)
-    helvetica = ImageFont.truetype(helvetica_path, int(font_size * .75))
-    helvetica_small = ImageFont.truetype(helvetica_path, int(font_size * .5))
+    lucida_calligraphy = ImageFont.truetype(georgia_calligraphy_path, font_size)
+    helvetica = ImageFont.truetype(calibri_path, int(font_size * .75))
+    helvetica_small = ImageFont.truetype(calibri_path, int(font_size * .5))
 
     image_width, image_height = image.size
     timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y'))

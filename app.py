@@ -7,6 +7,7 @@ from common import get_tweet
 from common import generate_image
 
 app = Flask(__name__)
+# app.config['STATIC_FOLDER'] = 'twitter'
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -20,9 +21,8 @@ def index():
 
         tweet = get_tweet(tweet_id)
         file_id = generate_image(tweet.AsDict())
-
         return redirect(url_for('index', id=file_id))
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=9000)
+    app.run(port=8001)
