@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Twitter Motivational Posters</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/styles.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="title">
+    <h1>Twitter Motivational Poster Generator</h1>
+    <h4>Turn any tweet into an inspirational motovational poster</h4>
+</div>
+
+<form class="tweet-input" method="POST">
+    <div class="input-group">
+        <input id="tweet-id" name="tweet_id" type="text" class="form-control" placeholder="Tweet ID">
+        <span class="input-group-btn">
+            <button class="btn btn-primary" type="submit">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+            </button>
+        </span>
+    </div>
+</form>
+
+{% if request.args.get('id') %}
+<div class="home">
+    <a href="/">[Return Home]</a>
+</div>
+{% endif %}
+
+<div class="poster-wrapper">
+    {% if request.args.get('id') %}
+        <img class="poster-new poster" src="/static/img/created/{{request.args.get('id')}}.jpg">
+    {% else %}
+
+    {% endif %}
+</div>
+
+<div class="footer">
+    <img class="sq" src="/static/img/sq.png">
+    A product of <a href="https://twitter.com/cloughrm">Ryan Clough</a>
+</div>
+
+</body>
+</html>

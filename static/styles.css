@@ -1,0 +1,56 @@
+/* Title area */
+.title {
+    text-align: center;
+    padding-top: 25px;
+}
+
+
+/* Tweet input area */
+.tweet-input {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.tweet-input > .input-group {
+    width: 250px;
+    margin: 0 auto;
+}
+
+#tweet-id {
+    text-align: center;
+}
+
+
+/* Poster area */
+.poster {
+    -webkit-box-shadow: -1px 0px 43px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: -1px 0px 43px 0px rgba(0,0,0,0.75);
+    box-shadow: -1px 0px 43px 0px rgba(0,0,0,0.75);
+}
+
+.home {
+    text-align: center;
+}
+
+.poster-wrapper {
+    padding-top: 30px;
+    text-align: center;
+}
+
+.poster-new {
+    max-width: 850px;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Footer */
+.footer {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.sq {
+    width: 15px;
+    margin-bottom: 3px;
+}
