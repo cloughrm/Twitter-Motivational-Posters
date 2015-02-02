@@ -1,45 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Twitter Motivational Posters</title>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/styles.css" rel="stylesheet">
 </head>
 <body>
 
-<div class="title">
-    <h1>Twitter Motivational Poster Generator</h1>
-    <h4>Turn any tweet into an inspirational motovational poster</h4>
-</div>
+<div class="container">
 
-<form class="tweet-input" method="POST">
-    <div class="input-group">
-        <input id="tweet-id" name="tweet_id" type="text" class="form-control" placeholder="Tweet ID">
-        <span class="input-group-btn">
-            <button class="btn btn-primary" type="submit">
-                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-            </button>
-        </span>
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="title">
+                <h1>Twitter Motivational Poster Generator</h1>
+                <h4>Turn any tweet into an inspirational motovational poster</h4>
+            </div>
+
+            <form class="tweet-input" method="POST">
+                <div class="input-group">
+                    <input id="tweet-id" name="tweet_id" type="text" class="form-control" placeholder="Tweet ID">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        </button>
+                    </span>
+                </div>
+            </form>
+
+            {% if request.args.get('id') %}
+            <div class="home">
+                <a href="/">[Return Home]</a>
+            </div>
+            {% endif %}
+
+        </div>
     </div>
-</form>
 
-{% if request.args.get('id') %}
-<div class="home">
-    <a href="/">[Return Home]</a>
-</div>
-{% endif %}
+    <div class="poster-wrapper row">
+        <div class="col-md-12">
+            {% if request.args.get('id') %}
+                <img class="poster-new poster" src="/static/img/created/{{request.args.get('id')}}.jpg">
+            {% else %}
+                <h4>Previous Works of Art</h4>
+                {% for item in scope['existing_images'] %}
+                    <a href="/static/img/created/{{item}}.jpg"><img class="poster-existing poster" src="/static/img/created/{{item}}.jpg"></a>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
 
-<div class="poster-wrapper">
-    {% if request.args.get('id') %}
-        <img class="poster-new poster" src="/static/img/created/{{request.args.get('id')}}.jpg">
-    {% else %}
+    <div class="footer">
+        <img class="sq" src="/static/img/sq.png">
+        A product of <a href="https://twitter.com/cloughrm">Ryan Clough</a>
+    </div>
 
-    {% endif %}
-</div>
-
-<div class="footer">
-    <img class="sq" src="/static/img/sq.png">
-    A product of <a href="https://twitter.com/cloughrm">Ryan Clough</a>
 </div>
 
 </body>

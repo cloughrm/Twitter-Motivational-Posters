@@ -1,8 +1,6 @@
 import os
-import uuid
 import time
 import twitter
-import hashlib
 
 from PIL import Image
 from PIL import ImageFont
@@ -97,24 +95,18 @@ def generate_image(tweet):
     draw.text(xy=(x, y), text=timestamp, font=helvetica_small)
 
     # Write out the image
-    file_id = str(uuid.uuid4())
-    file_path = os.path.join(out_dir, file_id + '.jpg')
+    file_name = '{}.jpg'.format(tweet['id'])
+    file_path = os.path.join(out_dir, file_name)
     image.save(file_path)
 
-    # Rename it as its md5 (prevents dupes)
-    md5 = hashlib.md5(open(file_path).read()).hexdigest()
-    md5_path = os.path.join(out_dir, md5 + '.jpg')
-    os.rename(file_path, md5_path)
-
-    return md5
+    return tweet['id']
 
 
 def get_tweet(tweet_id):
+    tweet_id = int(tweet_id)
     api = twitter.Api(
         consumer_key=os.environ['twitter_consumer_key'],
         consumer_secret=os.environ['twitter_consumer_secret'],
         access_token_key=os.environ['twitter_access_token_key'],
         access_token_secret=os.environ['twitter_access_token_secret'])
     return api.GetStatus(tweet_id)
-
-

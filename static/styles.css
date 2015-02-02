@@ -38,9 +38,14 @@
 }
 
 .poster-new {
-    max-width: 850px;
+    max-width: 80%;
     display: block;
     margin: 0 auto;
+}
+
+.poster-existing {
+    max-width: 35%;
+    margin: 40px;
 }
 
 /* Footer */
