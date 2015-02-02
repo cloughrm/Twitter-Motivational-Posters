@@ -3,16 +3,18 @@ import sys
 import glob
 
 from flask import Flask
+from flask import url_for
 from flask import request
 from flask import redirect
-from flask import render_template, url_for
+from flask import render_template
+from flask import send_from_directory
 
 from common import get_tweet
 from common import generate_image
 
 app = Flask(__name__)
-port = 8001
 IMAGES_GLOB = os.path.join('static', 'img', 'created', '*.jpg')
+port = 8001
 
 
 def get_latest(folder):
@@ -42,6 +44,13 @@ def index():
     tweet = get_tweet(tweet_id)
     file_id = generate_image(tweet.AsDict())
     return redirect(url_for('index', id=file_id))
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(
+        os.path.join(app.root_path, 'static'),
+        'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 if __name__ == '__main__':
