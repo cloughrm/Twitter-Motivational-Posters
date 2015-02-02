@@ -45,7 +45,7 @@
             {% else %}
                 <h4>Previous Works of Art</h4>
                 {% for item in scope['existing_images'] %}
-                    <a href="/static/img/created/{{item}}.jpg"><img class="poster-existing poster" src="/static/img/created/{{item}}.jpg"></a>
+                    <a href="/?id={{item}}"><img class="poster-existing poster" src="/static/img/created/{{item}}.jpg"></a>
                 {% endfor %}
             {% endif %}
         </div>
