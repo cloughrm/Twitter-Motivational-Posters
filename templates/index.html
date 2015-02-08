@@ -42,11 +42,11 @@
     <div class="poster-wrapper row">
         <div class="col-md-12">
             {% if request.args.get('id') %}
-                <img class="poster-new poster" src="/static/img/created/{{request.args.get('id')}}.jpg">
+                <img class="poster-new poster" src="/generate/{{request.args.get('id')}}">
             {% else %}
                 <h4>Previous Works of Art</h4>
-                {% for item in scope['existing_images'] %}
-                    <a href="/?id={{item}}"><img class="poster-existing poster" src="/static/img/created/{{item}}.jpg"></a>
+                {% for item in existing_items %}
+                    <a href="/?id={{item}}"><img class="poster-existing poster" src="/generate/{{item}}"></a>
                 {% endfor %}
             {% endif %}
         </div>

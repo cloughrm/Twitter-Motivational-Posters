@@ -1,20 +1,22 @@
 import os
 import time
 import twitter
+import StringIO
 
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 
 cwd = os.path.dirname(os.path.realpath(__file__))
-img_path = os.path.join(cwd, 'static', 'img', 'backgrounds', 'priroda-leto-rasteniya-zelen.jpg')
-out_dir = os.path.join(cwd, 'static', 'img', 'created')
+img_path = os.path.join(cwd, 'static', 'img', 'priroda-leto-rasteniya-zelen.jpg')
 georgia_calligraphy_path = os.path.join(cwd, 'fonts', 'Georgia_Italic.ttf')
 calibri_path = os.path.join(cwd, 'fonts', 'Calibri.ttf')
 
-# Make sure out_dir exists
-if not os.path.exists(out_dir):
-    os.makedirs(out_dir)
+api = twitter.Api(
+    consumer_key=os.environ['twitter_consumer_key'],
+    consumer_secret=os.environ['twitter_consumer_secret'],
+    access_token_key=os.environ['twitter_access_token_key'],
+    access_token_secret=os.environ['twitter_access_token_secret'])
 
 
 # I did not write this function. Credit:
@@ -94,19 +96,12 @@ def generate_image(tweet):
     stroke(draw, x, y, timestamp, helvetica_small, 2)
     draw.text(xy=(x, y), text=timestamp, font=helvetica_small)
 
-    # Write out the image
-    file_name = '{}.jpg'.format(tweet['id'])
-    file_path = os.path.join(out_dir, file_name)
-    image.save(file_path)
-
-    return tweet['id']
+    output = StringIO.StringIO()
+    image.save(output, format='jpeg')
+    output.seek(0)
+    return output
 
 
 def get_tweet(tweet_id):
     tweet_id = int(tweet_id)
-    api = twitter.Api(
-        consumer_key=os.environ['twitter_consumer_key'],
-        consumer_secret=os.environ['twitter_consumer_secret'],
-        access_token_key=os.environ['twitter_access_token_key'],
-        access_token_secret=os.environ['twitter_access_token_secret'])
     return api.GetStatus(tweet_id)

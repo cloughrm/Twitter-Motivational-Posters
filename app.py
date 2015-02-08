@@ -1,49 +1,62 @@
 import os
-import sys
-import glob
 
 from flask import Flask
 from flask import url_for
 from flask import request
 from flask import redirect
+from flask import send_file
 from flask import render_template
 from flask import send_from_directory
+
+from database.db import db
+from database.cache import cache
 
 from common import get_tweet
 from common import generate_image
 
+from datetime import datetime
+
 app = Flask(__name__)
-IMAGES_GLOB = os.path.join('static', 'img', 'created', '*.jpg')
+app.config.from_object('config')
+
+cache.init_app(app)
+db.init_app(app)
+
 port = 8001
 
 
-def get_latest(folder):
-    files = glob.glob(folder)
-    for f in files:
-        print os.path.getmtime(f), f
-    files.sort(key=lambda x: os.path.getmtime(x))
-    files.reverse()
-    files = [os.path.basename(x).split('.')[0] for x in files[:10]]
-    return files
+@app.route('/', methods=['GET'])
+def index_get():
+    existing_items = Tweet.query.order_by(Tweet.created.desc()).limit(10)
+    existing_items = [x.tweet_id for x in existing_items]
+    return render_template('index.html', existing_items=existing_items)
 
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    scope = {}
-
-    # GET request
-    if request.method == 'GET':
-        scope['existing_images'] = get_latest(IMAGES_GLOB)
-        return render_template('index.html', scope=scope)
-
-    # POST request
+@app.route('/', methods=['POST'])
+def index_post():
     tweet_id = request.form['tweet_id']
     if not tweet_id:
         return render_template('index.html')
 
+    tweet_entry = Tweet.query.get(int(tweet_id))
+    if tweet_entry:
+        now = datetime.now()
+        tweet_entry.created = now
+        db.session.commit()
+        return redirect(url_for('index_get', id=tweet_id))
+
+    tweet = get_tweet(tweet_id).AsDict()
+    db.session.add(Tweet(tweet))
+    db.session.commit()
+    return redirect(url_for('index_get', id=tweet_id))
+
+
+@app.route('/generate/<tweet_id>', methods=['GET'])
+@cache.cached(timeout=86400)
+def generate_get(tweet_id):
     tweet = get_tweet(tweet_id)
-    file_id = generate_image(tweet.AsDict())
-    return redirect(url_for('index', id=file_id))
+    file_io = generate_image(tweet.AsDict())
+    return send_file(file_io, attachment_filename="testing.jpeg")
 
 
 @app.route('/favicon.ico')
@@ -54,7 +67,8 @@ def favicon():
 
 
 if __name__ == '__main__':
-    debug = False
-    if len(sys.argv) > 1 and sys.argv[1] == 'dev':
-        debug = True
-    app.run(port=port, debug=debug)
+    with app.test_request_context():
+        from database.models import Tweet
+        db.create_all()
+
+    app.run(port=port)
