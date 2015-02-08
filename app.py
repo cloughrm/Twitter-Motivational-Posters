@@ -9,7 +9,7 @@ from flask import render_template
 from flask import send_from_directory
 
 from database.db import db
-from database.cache import cache
+from database.models import Tweet
 
 from common import get_tweet
 from common import generate_image
@@ -19,7 +19,6 @@ from datetime import datetime
 app = Flask(__name__)
 app.config.from_object('config')
 
-cache.init_app(app)
 db.init_app(app)
 
 port = 8001
@@ -29,7 +28,8 @@ port = 8001
 def index_get():
     existing_items = Tweet.query.order_by(Tweet.created.desc()).limit(10)
     existing_items = [x.tweet_id for x in existing_items]
-    return render_template('index.html', existing_items=existing_items)
+    print 'here'
+    return render_template('index.html', existing_items=existing_items, request=request)
 
 
 @app.route('/', methods=['POST'])
@@ -52,11 +52,10 @@ def index_post():
 
 
 @app.route('/generate/<tweet_id>', methods=['GET'])
-@cache.cached(timeout=86400)
 def generate_get(tweet_id):
     tweet = get_tweet(tweet_id)
     file_io = generate_image(tweet.AsDict())
-    return send_file(file_io, attachment_filename="testing.jpeg")
+    return send_file(file_io, attachment_filename='image.jpeg')
 
 
 @app.route('/favicon.ico')
@@ -68,7 +67,6 @@ def favicon():
 
 if __name__ == '__main__':
     with app.test_request_context():
-        from database.models import Tweet
         db.create_all()
 
     app.run(port=port)
