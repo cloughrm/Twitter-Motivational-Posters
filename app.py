@@ -26,7 +26,7 @@ port = 8001
 
 @app.route('/', methods=['GET'])
 def index_get():
-    existing_items = Tweet.query.order_by(Tweet.created.desc()).limit(10)
+    existing_items = Tweet.query.order_by(Tweet.created.desc()).limit(6)
     existing_items = [x.tweet_id for x in existing_items]
     return render_template('index.html', existing_items=existing_items, request=request)
 
