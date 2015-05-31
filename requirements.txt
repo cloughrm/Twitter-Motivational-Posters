@@ -3,3 +3,4 @@ Pillow
 Flask
 Flask-Cache
 Flask-SQLAlchemy
+requests_oauthlib
