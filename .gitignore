@@ -5,3 +5,4 @@ static/img/created/*.jpg
 *.log
 env/
 .env
+sqlite.db
