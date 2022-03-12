@@ -44,7 +44,7 @@ def index_post():
         db.session.commit()
         return redirect(url_for('index_get', id=tweet_id))
 
-    tweet = get_tweet(tweet_id).AsDict()
+    tweet = get_tweet(tweet_id)
     db.session.add(Tweet(tweet))
     db.session.commit()
     return redirect(url_for('index_get', id=tweet_id))
@@ -53,7 +53,7 @@ def index_post():
 @app.route('/generate/<tweet_id>', methods=['GET'])
 def generate_get(tweet_id):
     tweet = get_tweet(tweet_id)
-    file_io = generate_image(tweet.AsDict())
+    file_io = generate_image(tweet)
     return send_file(file_io, attachment_filename='image.jpeg')
 
 

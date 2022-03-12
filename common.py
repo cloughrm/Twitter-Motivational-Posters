@@ -1,7 +1,7 @@
 import os
+import io
 import time
-import twitter
-import StringIO
+import requests
 
 from PIL import Image
 from PIL import ImageFont
@@ -11,12 +11,6 @@ cwd = os.path.dirname(os.path.realpath(__file__))
 img_path = os.path.join(cwd, 'static', 'img', 'priroda-leto-rasteniya-zelen.jpg')
 georgia_calligraphy_path = os.path.join(cwd, 'fonts', 'Georgia_Italic.ttf')
 calibri_path = os.path.join(cwd, 'fonts', 'Calibri.ttf')
-
-api = twitter.Api(
-    consumer_key=os.environ['twitter_consumer_key'],
-    consumer_secret=os.environ['twitter_consumer_secret'],
-    access_token_key=os.environ['twitter_access_token_key'],
-    access_token_secret=os.environ['twitter_access_token_secret'])
 
 
 # I did not write this function. Credit:
@@ -68,9 +62,9 @@ def generate_image(tweet):
     helvetica_small = ImageFont.truetype(calibri_path, int(font_size * .5))
 
     image_width, image_height = image.size
-    timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y'))
+    timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(tweet['data']['created_at'], '%Y-%m-%dT%H:%M:%S.%fZ'))
 
-    lines, w, h = intelli_draw(draw, tweet['text'], lucida_calligraphy, image_width - (margin * 2) - padding_left)
+    lines, w, h = intelli_draw(draw, tweet['data']['text'], lucida_calligraphy, image_width - (margin * 2) - padding_left)
     for i, line in enumerate(lines):
 
         # Calculate x and y
@@ -82,7 +76,7 @@ def generate_image(tweet):
         draw.text(xy=(x, y), text=line, font=lucida_calligraphy, fill='white')
 
     # Draw the username
-    at_username = '@' + tweet['user']['screen_name']
+    at_username = '@' + tweet['includes']['users'][0]['username']
     username_width, username_height = draw.textsize(at_username, helvetica)
     x = margin
     y = image_height - username_height - margin
@@ -90,18 +84,29 @@ def generate_image(tweet):
     draw.text(xy=(x, y), text=at_username, font=helvetica)
 
     # Draw the timestamp
+    timestamp += ' GMT'
     timestamp_width, timestamp_height = draw.textsize(timestamp, helvetica_small)
     x = username_width + (margin * 2)
     y = image_height - margin - (timestamp_height * 1.3)
     stroke(draw, x, y, timestamp, helvetica_small, 2)
     draw.text(xy=(x, y), text=timestamp, font=helvetica_small)
 
-    output = StringIO.StringIO()
+    output = io.BytesIO()
     image.save(output, format='jpeg')
     output.seek(0)
     return output
 
 
 def get_tweet(tweet_id):
-    tweet_id = int(tweet_id)
-    return api.GetStatus(tweet_id)
+    url = f'https://api.twitter.com/2/tweets/{tweet_id}'
+    token = os.getenv('TWITTER_BEARER_TOKEN')
+    headers = {
+        'Authorization': f'Bearer {token}'
+    }
+    params = {
+        'tweet.fields': 'created_at',
+        'expansions': 'author_id'
+    }
+    resp = requests.get(url, headers=headers, params=params)
+    tweet = resp.json()
+    return tweet

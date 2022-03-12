@@ -1,4 +1,3 @@
-python-twitter
 Pillow
 Flask
 Flask-Cache

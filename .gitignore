@@ -3,3 +3,5 @@ static/img/created/*.jpg
 *~
 *.swp
 *.log
+env/
+.env
